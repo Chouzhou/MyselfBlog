@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """Social_Blog URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -15,8 +16,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from blog.views import index
+from blog.views import index, login_form, register_form, login, register
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', index),
+    url(r'^login_form/', login_form, name='login_form'),
+    url(r'^register_form/', register_form, name='register_form'),
+    url(r'^login/', login, name='login'),
+    url(r'^register/', register, name='register'),
 ]
