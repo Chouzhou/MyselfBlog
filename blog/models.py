@@ -1,23 +1,19 @@
 # -*- coding:utf-8 -*-
 from django.db import models
-from datetime import datetime
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 # 用户表
 
 
-class User(models.Model):
-    username = models.CharField(max_length=15)
-    password = models.CharField(max_length=100)
-    # 注册邮箱
-    register_email = models.EmailField(
-        verbose_name='Email', max_length=255, unique=True, db_index=True)
-    # 用户是否激活
-    is_active = models.BooleanField(default=False)
-    # 注册时间
-    register_time = models.DateTimeField(auto_now_add=True)
-    # 最近登录时间
-    last_time = models.DateTimeField(auto_now=True)
+class User(AbstractUser):
+    mobile = models.CharField(
+        max_length=11, blank=True, null=True, unique=True, verbose_name='手机号码')
+
+    class Meta:
+        verbose_name = '用户'
+        verbose_name_plural = verbose_name
+        ordering = ['-id']
 
     def __str__(self):
         return self.username

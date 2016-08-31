@@ -31,9 +31,9 @@
                 <a href="{% url 'register_form' %}" style="color:white;">注册</a>
                 <i class="mdi-content-send right"></i>
             </button> -->
-            {% if error %}
-                <p>{{ error }}</p>
-            {% endif %}
         </form>
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
     </div>
 {% endblock %}
