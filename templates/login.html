@@ -3,20 +3,20 @@
 {% block title %}登录{% endblock %}
 {% block content %}
     <div class="row">
-        <form class="col s12" method="post" action="/login/">
+        <form class="col s12" method="post" action="/account/login/">
             {% csrf_token %}
             <div class="row">
                 <!-- <div class="input-field col s6">
                     <input placeholder="Placeholder" id="first_name" type="text" class="validate">
                     <label for="first_name">First Name</label>
                 </div> -->
-                <div class="input-field col s6">
+                <div class="input-field col s6" align="center">
                     <input id="last_name" type="text" class="validate" name="username">
-                    <label for="last_name">用户名或注册邮箱登陆</label>
+                    <label for="last_name">用户名</label>
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s6" align="center">
                     <input id="password" type="password" class="validate" name="password">
                     <label for="password">密码</label>
                 </div>
@@ -27,10 +27,10 @@
                 <!-- </a> -->
                 <i class="mdi-content-send right"></i>
             </button>
-            <!-- <button class="btn waves-effect waves-light" type="submit" name="action">
+            <button class="btn waves-effect waves-light" type="submit" name="action">
                 <a href="{% url 'register_form' %}" style="color:white;">注册</a>
                 <i class="mdi-content-send right"></i>
-            </button> -->
+            </button>
         </form>
         {% if error %}
             <p>{{ error }}</p>

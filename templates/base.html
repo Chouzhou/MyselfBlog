@@ -40,7 +40,7 @@
                     <i class="mdi-navigation-menu"></i>
                 </a>
                 <!-- 下拉选项 -->
-                {% if user %}
+                {% if user.is_authenticated %}
                     <ul id="dropdown1" class="dropdown-content">
                         <li>
                             <a href="#!">one</a>
@@ -50,7 +50,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="#!">three</a>
+                            <a href="{% url 'logout' %}">退出</a>
                         </li>
                     </ul>
                     <div class="nav-wrapper">
@@ -67,13 +67,18 @@
                     <div class="nav-wrapper">
                         <ul id="nav-mobile" class="right hide-on-med-and-down">
                             <li>
+                                <a href="{% url 'index' %}">首页</a>
+                            </li>
+                            <li>
                                 <a href="{% url 'login_form' %}">登录</a>
                             </li>
                             <li>
                                 <a href="{% url 'register_form' %}">新用户注册</a>
                             </li>
-                        </div>
-                    {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if user.is_authenticated %}
                     <ul class="side-nav" id="mobile-demo">
                         <li>
                             <a href="sass.html">Sass</a>
@@ -85,27 +90,41 @@
                             <a href="collapsible.html">Javascript</a>
                         </li>
                         <li>
-                            <a href="mobile.html">Mobile</a>
+                            <a href="{% url 'logout' %}">退出</a>
                         </li>
                     </ul>
+                {% else %}
+                    <ul class="side-nav" id="mobile-demo">
+                        <li>
+                            <a href="{% url 'index' %}">首页</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'login_form' %}">登录</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'register_form' %}">新用户注册</a>
+                        </li>
+                    </ul>
+                {% endif %}
+
+            </div>
+        </nav>
+    {% endblock %}
+    {% block content %}{% endblock %}
+    <footer class="page-footer" id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <!-- <h5 class="white-text">Footer Content</h5> -->
+                    <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
                 </div>
-            </nav>
-        {% endblock %}
-        {% block content %}{% endblock %}
-        <footer class="page-footer" id="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col l6 s12">
-                        <!-- <h5 class="white-text">Footer Content</h5> -->
-                        <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
-                    </div>
-                    <div class="col l4 offset-l2 s12">
-                        <h5 class="white-text">Links</h5>
-                        <ul>
-                            <li>
-                                <a class="grey-text text-lighten-3" href="#!">Link 1</a>
-                            </li>
-                            <!-- <li>
+                <div class="col l4 offset-l2 s12">
+                    <h5 class="white-text">Links</h5>
+                    <ul>
+                        <li>
+                            <a class="grey-text text-lighten-3" href="#!">Link 1</a>
+                        </li>
+                        <!-- <li>
                                 <a class="grey-text text-lighten-3" href="#!">Link 2</a>
                             </li>
                             <li>
@@ -114,22 +133,22 @@
                             <li>
                                 <a class="grey-text text-lighten-3" href="#!">Link 4</a>
                             </li> -->
-                        </ul>
-                    </div>
+                    </ul>
                 </div>
             </div>
-            <div class="footer-copyright">
-                <div class="container">
-                    © 2014 Copyright Text
-                    <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
-                </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                © 2014 Copyright Text
+                <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
             </div>
-        </footer>
-        <!--Import jQuery before materialize.js-->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
-        <script type="text/javascript">
-            $(".button-collapse").sideNav();
-            $(".dropdown-button").dropdown();
-        </script>
-    </html>
+        </div>
+    </footer>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+    <script type="text/javascript">
+        $(".button-collapse").sideNav();
+        $(".dropdown-button").dropdown();
+    </script>
+</html>

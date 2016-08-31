@@ -5,7 +5,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 # 视图函数中给render_to_response增加一个参数:context_instance=RequestContext(request)
 from django.template import RequestContext
 from blog.models import User
-from django.contrib.auth import logout, login, authenticate
+# from django.contrib.auth import logout, login, authenticate
+from django.contrib import auth
+from blog.create_token import Token
+from Social_Blog.settings import SECRET_KEY
+from blog.sendEmail import send_html_mail
 # from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
@@ -14,12 +18,10 @@ from django.contrib.auth import logout, login, authenticate
 
 def index(request):
     # session获取用户id
-    user_id = request.session.get('user_id', '')
-    if user_id:
-        user = User.objects.get(id=user_id)
-        return render(request, 'index.html', {'user': user})
+    if request.user.is_authenticated():
+        return render(request, 'index.html', {'user': request.user})
     return render_to_response('index.html')
-# 登陆
+# 登录
 
 
 def login_form(request):
@@ -29,16 +31,16 @@ def login_form(request):
     return render(request, 'login.html')
 
 
-# @csrf_protect
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        user = auth.authenticate(username=username, password=password)
         if not user:
             request.session['error'] = '密码错误或者用户名错误'
-            return HttpResponseRedirect('/login_form/')
-        request.session['user_id'] = user.id
+            return HttpResponseRedirect('/account/login_form/')
+        auth.login(request, user)
+        # request.session['user_id'] = user.id
         return HttpResponseRedirect('/')
     return render(request, 'login.html')
 # 注册
@@ -59,5 +61,16 @@ def register(request):
                                         email=email,
                                         )
         user.save()
-        return HttpResponseRedirect('/login/')
+        # 发送验证邮箱邮件
+        token_confirm = Token(SECRET_KEY)
+        token = token_confirm.generate_validate_token(username)
+        send_success = send_html_mail([email, ], token)
+        if send_success:
+            return HttpResponseRedirect('/account/login/', {'info': '发送成功，请到自己的邮箱验证'})
     return render_to_response('register.html')
+# 退出登录
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
