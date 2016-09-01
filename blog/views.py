@@ -52,12 +52,6 @@ def emailVerify(username, email):
     user = User.objects.get(username=username)
     print(token)
     send_success = send_html_mail([email, ], token, user)
-    # message = "n".join([
-    #     u'{0},欢迎加入我的博客'.format(username),
-    #     u'请访问该链接，完成用户验证:',
-    #     '/'.join(['127.0.0.1:8000', 'account/verify_email', token])
-    # ])
-    # send_mail('注册用户验证信息', message, EMAIL_HOST_USER, [email])
     return True
 # 注册
 
