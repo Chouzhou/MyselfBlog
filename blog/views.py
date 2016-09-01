@@ -27,12 +27,6 @@ def index(request):
 
 
 def login_form(request):
-    # 登录失败信息
-    error_info = request.session.get('error', '')
-    # 注册成功信息
-    register_info = request.session.get('info', '')
-    if error_info:
-        return render(request, 'login.html', {'error': error_info, 'info': register_info})
     return render(request, 'login.html')
 
 
@@ -42,8 +36,7 @@ def login(request):
         password = request.POST['password']
         user = auth.authenticate(username=username, password=password)
         if not user:
-            request.session['error'] = '密码错误或者用户名错误'
-            return HttpResponseRedirect('/account/login_form/')
+            return render(request, 'login.html', {'info': '密码错误或者用户名错误'})
         auth.login(request, user)
         # request.session['user_id'] = user.id
         return HttpResponseRedirect('/')
@@ -56,14 +49,15 @@ def login(request):
 def emailVerify(username, email):
     token_confirm = Token(SECRET_KEY)
     token = token_confirm.generate_validate_token(username)
+    user = User.objects.get(username=username)
     print(token)
-    # send_success = send_html_mail([email, ], token)
-    message = "n".join([
-        u'{0},欢迎加入我的博客'.format(username),
-        u'请访问该链接，完成用户验证:',
-        '/'.join(['127.0.0.1:8000', 'account/verify_email', token])
-    ])
-    send_mail('注册用户验证信息', message, EMAIL_HOST_USER, [email])
+    send_success = send_html_mail([email, ], token, user)
+    # message = "n".join([
+    #     u'{0},欢迎加入我的博客'.format(username),
+    #     u'请访问该链接，完成用户验证:',
+    #     '/'.join(['127.0.0.1:8000', 'account/verify_email', token])
+    # ])
+    # send_mail('注册用户验证信息', message, EMAIL_HOST_USER, [email])
     return True
 # 注册
 
@@ -85,8 +79,8 @@ def register(request):
         user.save()
         send_success = emailVerify(username, email)
         if send_success:
-            request.session['info'] = '发送成功，请到自己的邮箱验证'
-            return HttpResponseRedirect('/account/login_form/')
+            # request.session['info'] = '发送成功，请到自己的邮箱验证'
+            return render(request, 'login.html', {'info': '发送成功，请到自己的邮箱验证'})
     return render_to_response('register.html')
 # 验证邮箱
 
@@ -104,10 +98,10 @@ def verify_email(request, argv):
     except User.DoesNotExist:
         return HttpResponse(u'对不起，您所验证的用户不存在，请重新注册')
     if user.is_active:
-        return HttpResponse(u'对不起，您所验证的用户已激活')
+        return render(request, 'login.html', {'info': '该用户已激活'})
     user.is_active = True
     user.save()
-    return HttpResponseRedirect('/account/login/')
+    return render(request, 'login.html', {'info': '激活成功请登录'})
 
 # 退出登录
 

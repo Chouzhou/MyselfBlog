@@ -2,8 +2,8 @@
     <head></head>
     <body>
         <p>
-            激活你的账号
+            激活{{ user.username }}的账号
         </p>
-        <a href="{% url 'verify_email' paramters %}">点击这里激活</a>
+        <a href="http://127.0.0.1:8000{% url 'verify_email' paramters %}">点击这里激活</a>
     </body>
 </html>

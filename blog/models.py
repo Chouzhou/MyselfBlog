@@ -18,6 +18,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    # def get_absolute_url(self):
+    #     return '127.0.0.1:8000/account/verify_email/'
 # 日志
 
 
