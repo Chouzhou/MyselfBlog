@@ -10,6 +10,8 @@ from django.contrib import auth
 from blog.create_token import Token
 from Social_Blog.settings import SECRET_KEY
 from blog.sendEmail import send_html_mail
+from django.core.mail import send_mail
+from Social_Blog.settings import EMAIL_HOST_USER
 # from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
@@ -25,9 +27,12 @@ def index(request):
 
 
 def login_form(request):
+    # 登录失败信息
     error_info = request.session.get('error', '')
+    # 注册成功信息
+    register_info = request.session.get('info', '')
     if error_info:
-        return render(request, 'login.html', {'error': error_info})
+        return render(request, 'login.html', {'error': error_info, 'info': register_info})
     return render(request, 'login.html')
 
 
@@ -43,6 +48,27 @@ def login(request):
         # request.session['user_id'] = user.id
         return HttpResponseRedirect('/')
     return render(request, 'login.html')
+
+
+# 发送验证邮件
+
+
+def emailVerify(username, email):
+    token_confirm = Token(SECRET_KEY)
+    token = token_confirm.generate_validate_token(username)
+    print(token)
+    # send_success = send_html_mail([email, ], token)
+    message = "n".join([
+        u'{0},欢迎加入我的博客'.format(username),
+        u'请访问该链接，完成用户验证:',
+        '/'.join(['127.0.0.1:8000', 'account/verify_email', token])
+    ])
+    send_mail('注册用户验证信息', message, EMAIL_HOST_USER, [email])
+    # if send_success:
+    #     return True
+    # else:
+    #     return False
+    return True
 # 注册
 
 
@@ -62,12 +88,29 @@ def register(request):
                                         )
         user.save()
         # 发送验证邮箱邮件
-        token_confirm = Token(SECRET_KEY)
-        token = token_confirm.generate_validate_token(username)
-        send_success = send_html_mail([email, ], token)
+        # token_confirm = Token(SECRET_KEY)
+        # token = token_confirm.generate_validate_token(username)
+        send_success = emailVerify(username, email)
         if send_success:
-            return HttpResponseRedirect('/account/login/', {'info': '发送成功，请到自己的邮箱验证'})
+            request.session['info'] = '发送成功，请到自己的邮箱验证'
+            return HttpResponseRedirect('/account/login/')
     return render_to_response('register.html')
+# 验证邮箱
+
+
+def verify_email(request, argv):
+    try:
+        username = token_confirm.confirm_validate_token(argv)
+    except:
+        return HttpResponse(u'对不起，验证链接已经过期')
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponse(u'对不起，您所验证的用户不存在，请重新注册')
+    user.is_active = True
+    user.save()
+    return HttpResponseRedirect('/account/login/')
+
 # 退出登录
 
 

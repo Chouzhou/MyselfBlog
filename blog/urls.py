@@ -15,11 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from blog.views import login_form, register_form, login, register, logout
+from blog.views import login_form, register_form, login, register, logout, verify_email
 urlpatterns = [
     url(r'^login_form/', login_form, name='login_form'),
     url(r'^register_form/', register_form, name='register_form'),
     url(r'^login/', login, name='login'),
     url(r'^register/', register, name='register'),
     url(r'^logout/', logout, name='logout'),
+    url(r'^verify_email/(?P<argv>\w+.[-_\w]*\w+.[-_\w]*\w+)/',
+        verify_email, name='verify_email'),
 ]
