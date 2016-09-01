@@ -64,10 +64,6 @@ def emailVerify(username, email):
         '/'.join(['127.0.0.1:8000', 'account/verify_email', token])
     ])
     send_mail('注册用户验证信息', message, EMAIL_HOST_USER, [email])
-    # if send_success:
-    #     return True
-    # else:
-    #     return False
     return True
 # 注册
 
@@ -87,26 +83,28 @@ def register(request):
                                         email=email,
                                         )
         user.save()
-        # 发送验证邮箱邮件
-        # token_confirm = Token(SECRET_KEY)
-        # token = token_confirm.generate_validate_token(username)
         send_success = emailVerify(username, email)
         if send_success:
             request.session['info'] = '发送成功，请到自己的邮箱验证'
-            return HttpResponseRedirect('/account/login/')
+            return HttpResponseRedirect('/account/login_form/')
     return render_to_response('register.html')
 # 验证邮箱
 
 
 def verify_email(request, argv):
+    # try:
+    token_confirm = Token(SECRET_KEY)
+    print(argv)
+    username = token_confirm.confirm_validate_token(argv)
+    # except:
+    #     return HttpResponse(u'对不起，验证链接已经过期')
     try:
-        username = token_confirm.confirm_validate_token(argv)
-    except:
-        return HttpResponse(u'对不起，验证链接已经过期')
-    try:
+        print(username)
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponse(u'对不起，您所验证的用户不存在，请重新注册')
+    if user.is_active:
+        return HttpResponse(u'对不起，您所验证的用户已激活')
     user.is_active = True
     user.save()
     return HttpResponseRedirect('/account/login/')

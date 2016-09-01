@@ -7,13 +7,12 @@ class Token():
 
     def __init__(self, security_key):
         self.security_key = security_key
-        self.salt = base64.b64encode(security_key.encode(encoding='utf-8'))
 
-    def confirm_validate_token(self, token):
+    def generate_validate_token(self, username):
         serializer = utsr(self.security_key)
-        return serializer.loads(token, salt=self.salt)
+        return serializer.dumps(username)
 
-    def generate_validate_token(self, username, expiration=3600):
-        serializer = utsr(self.security_key, expiration)
-        return serializer.dumps(username,
-                                salt=self.salt)
+    def confirm_validate_token(self, token, expiration=3600):
+        serializer = utsr(self.security_key)
+        return serializer.loads(token,
+                                max_age=expiration)
