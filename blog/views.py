@@ -34,24 +34,34 @@ def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = auth.authenticate(username=username, password=password)
+        # 判断是否是邮箱登陆
+        if '@' in username:
+            user = auth.authenticate(email=username, password=password)
+        else:
+            user = auth.authenticate(username=username, password=password)
         if not user:
             return render(request, 'login.html', {'info': '密码错误或者用户名错误'})
-        auth.login(request, user)
-        # request.session['user_id'] = user.id
-        return HttpResponseRedirect('/')
+        # 验证用户是否激活
+        if user.is_active:
+            auth.login(request, user)
+            # request.session['user_id'] = user.id
+            return HttpResponseRedirect('/')
+        else:
+            # 重新发送验证邮箱
+            emailVerify(username, user.email, 'email/verify_email.html')
+            return render(request, 'login.html')
     return render(request, 'login.html')
 
 
 # 发送验证邮件
 
 
-def emailVerify(username, email):
+def emailVerify(username, email, text_email):
     token_confirm = Token(SECRET_KEY)
     token = token_confirm.generate_validate_token(username)
     user = User.objects.get(username=username)
     print(token)
-    send_success = send_html_mail([email, ], token, user)
+    send_success = send_html_mail([email, ], token, user, text_email)
     return True
 # 注册
 
@@ -71,7 +81,7 @@ def register(request):
                                         email=email,
                                         )
         user.save()
-        send_success = emailVerify(username, email)
+        send_success = emailVerify(username, email, 'email/verify_email.html')
         if send_success:
             # request.session['info'] = '发送成功，请到自己的邮箱验证'
             return render(request, 'login.html', {'info': '发送成功，请到自己的邮箱验证'})
@@ -96,7 +106,15 @@ def verify_email(request, argv):
     user.is_active = True
     user.save()
     return render(request, 'login.html', {'info': '激活成功请登录'})
+# 忘记密码
 
+
+def send_reset_pwd(request):
+    pass
+
+
+def reset_pwd(request):
+    pass
 # 退出登录
 
 
