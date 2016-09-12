@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from blog.views import login_form, register_form, login, register, logout, verify_email
+# from blog.views import login_form, register_form, login, register, logout, verify_email, verify_resetPwd_email, resetPwd_email, reset_pwd
+from blog.views import *
 urlpatterns = [
     url(r'^login_form/', login_form, name='login_form'),
     url(r'^register_form/', register_form, name='register_form'),
@@ -24,4 +25,9 @@ urlpatterns = [
     url(r'^logout/', logout, name='logout'),
     url(r'^verify_email/(?P<argv>\w+.[-_\w]*\w+.[-_\w]*\w+)/',
         verify_email, name='verify_email'),
+    # 重设密码
+    url(r'^verify_resetPwd_email/(?P<argv>\w+.[-_\w]*\w+.[-_\w]*\w+)/',
+        verify_resetPwd_email, name='verify_resetPwd_email'),
+    url(r'^resetPwd_email/', send_reset_pwd, name='resetPwd_email'),
+    url(r'^reset_pwd/', reset_pwd, name='reset_pwd'),
 ]

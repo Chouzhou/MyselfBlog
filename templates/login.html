@@ -33,7 +33,7 @@
             </button>
         </form>
         <p>
-            忘记密码？请点<a href="">这里</a>
+            忘记密码？请点<a href="{% url 'resetPwd_email' %}">这里</a>
         </p>
         {% if error %}
             <p>{{ error }}</p>

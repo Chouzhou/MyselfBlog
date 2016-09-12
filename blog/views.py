@@ -12,6 +12,7 @@ from Social_Blog.settings import SECRET_KEY
 from blog.sendEmail import send_html_mail
 from django.core.mail import send_mail
 from Social_Blog.settings import EMAIL_HOST_USER
+from django.contrib.auth.decorators import login_required
 # from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
@@ -49,7 +50,7 @@ def login(request):
         else:
             # 重新发送验证邮箱
             emailVerify(username, user.email, 'email/verify_email.html')
-            return render(request, 'login.html')
+            return render(request, 'login.html', {'info': '验证邮件已重新发送'})
     return render(request, 'login.html')
 
 
@@ -60,7 +61,7 @@ def emailVerify(username, email, text_email):
     token_confirm = Token(SECRET_KEY)
     token = token_confirm.generate_validate_token(username)
     user = User.objects.get(username=username)
-    print(token)
+    # print(token)
     send_success = send_html_mail([email, ], token, user, text_email)
     return True
 # 注册
@@ -75,7 +76,10 @@ def register(request):
         username = request.POST['username']
         password = request.POST['password']
         email = request.POST['email']
-        print(username, password, email)
+        # print(username, password, email)
+        user = User.objects.filter(email=email)
+        if user:
+            render(request, 'login.html', {'info': '该邮箱已注册'})
         user = User.objects.create_user(username=username,
                                         password=password,
                                         email=email,
@@ -92,7 +96,7 @@ def register(request):
 def verify_email(request, argv):
     # try:
     token_confirm = Token(SECRET_KEY)
-    print(argv)
+    # print(argv)
     username = token_confirm.confirm_validate_token(argv)
     # except:
     #     return HttpResponse(u'对不起，验证链接已经过期')
@@ -106,18 +110,49 @@ def verify_email(request, argv):
     user.is_active = True
     user.save()
     return render(request, 'login.html', {'info': '激活成功请登录'})
-# 忘记密码
+
+
+# 发送重设密码邮件
 
 
 def send_reset_pwd(request):
-    pass
+    if request.method == 'POST':
+        email = request.POST['email']
+        user = User.objects.get(email=email)
+        emailVerify(user.username, email, 'email/reset_pwd.html')
+        return render(request, 'login.html', {'info': '重设密码的邮件已发送'})
+    else:
+        return render(request, 'resetPwdEmail.html')
+
+# 验证发送的重设密码邮件
+
+
+def verify_resetPwd_email(request, argv):
+    try:
+        token_confirm = Token(SECRET_KEY)
+        username = token_confirm.confirm_validate_token(argv)
+    except:
+        return HttpResponse(u'对不起，验证链接已经过期')
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponse(u'对不起，您所输入的用户不存在，请重新确认')
+    request.session['username'] = user.username
+    return render(request, 'resetPassword.html')
+# 重设密码
 
 
 def reset_pwd(request):
-    pass
+    user = User.objects.get(username=request.session.get('username'))
+    if request.method == 'POST':
+        newPassword = request.POST['newPwd']
+        user.set_password(newPassword)
+        user.save()
+        return render(request, 'login.html', {'info': '重设密码成功，请登录'})
 # 退出登录
 
 
+@login_required
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
