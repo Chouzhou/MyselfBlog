@@ -8,7 +8,7 @@ from Social_Blog.settings import EMAIL_HOST_USER  # 项目配置邮件地址，�
 # 异步发送邮件
 
 
-@asyncio.coroutine
+# @asyncio.coroutine
 def send_html_mail(recipient_list, paramters, user, text_email):
     subject = '验证邮箱'
     html_content = loader.render_to_string(
@@ -19,5 +19,6 @@ def send_html_mail(recipient_list, paramters, user, text_email):
     )
     msg = EmailMessage(subject, html_content, EMAIL_HOST_USER, recipient_list)
     msg.content_subtype = "html"  # Main content is now text/html
-    yield from msg.send()
+    # yield from
+    msg.send()
     return True

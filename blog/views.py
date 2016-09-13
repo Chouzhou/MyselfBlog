@@ -19,6 +19,7 @@ from django.contrib.auth.decorators import login_required
 # 主页
 
 
+# @login_required
 def index(request):
     # session获取用户id
     if request.user.is_authenticated():
@@ -149,6 +150,28 @@ def reset_pwd(request):
         user.set_password(newPassword)
         user.save()
         return render(request, 'login.html', {'info': '重设密码成功，请登录'})
+
+# 修改密码
+
+
+@login_required
+def modify_pwd(request):
+    if request.method == 'GET':
+        print(request.user.username)
+        return render(request, 'modifyPwd.html')
+    else:
+        oldPwd = request.POST['oldPwd']
+        username = request.user.username
+        user = auth.authenticate(username=username, password=oldPwd)
+        if user and user.is_active:
+            newPwd = request.POST['newPwd']
+            # againPwd = request.POST['againNewPwd']
+            user.set_password(newPwd)
+            user.save()
+            return render(request, 'index.html', {'info': '修改密码成功'})
+        else:
+            return render(request, 'modifyPwd.html', {'info', '输入的旧密码错误'})
+
 # 退出登录
 
 

@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}重设密码{% endblock %}
+{% block title %}修改密码{% endblock %}
 {% block content %}
     <div class="row">
-        <form class="col s12" method="post" action="/account/reset_pwd/">
+        <form class="col s12" method="post" action="/account/modify_pwd/">
             {% csrf_token %}
             <div class="row">
                 <!-- <div class="input-field col s6">
@@ -11,22 +11,35 @@
                 <label for="first_name">First Name</label>
             </div> -->
                 <div class="input-field col s6" align="center">
+                    <input id="password" type="password" class="validate" name="oldPwd">
+                    <label for="password">旧密码</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6" align="center">
                     <input id="password" type="password" class="validate" name="newPwd">
-                    <label for="password">输入重设密码</label>
+                    <label for="password">新密码</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6" align="center">
+                    <input id="password1" type="password" class="validate" name="againNewPwd">
+                    <label for="password">再输入一次新密码</label>
                 </div>
             </div>
             <button class="btn waves-effect waves-light" type="submit" name="action">
                 <!-- <a href="{% url 'login' %}" style="color:white;"> -->
-                重设
+                修改
                 <!-- </a> -->
                 <i class="mdi-content-send right"></i>
             </button>
         </form>
         <!-- {% if error %}
             <p>{{ error }}</p>
-        {% endif %}
+        {% endif %} -->
         {% if info %}
             <p>{{ info }}</p>
-        {% endif %} -->
+        {% endif %}
+
     </div>
 {% endblock %}
