@@ -9,6 +9,10 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     mobile = models.CharField(
         max_length=11, blank=True, null=True, unique=True, verbose_name='手机号码')
+    describe = models.CharField(
+        max_length=100, blank=True, null=True, unique=True, verbose_name='自我简介')
+    gender = models.CharField(
+        max_length=100, blank=True, null=True, unique=True, verbose_name='性别')
     is_active = models.BooleanField(default=False)
 
     class Meta:
