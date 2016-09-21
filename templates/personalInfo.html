@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}{{ user.username }}的个人信息{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="section col s12 m9 l10">
+        <div class="row">
+            <form class="col s12" method="post" action='/account/personalInfo/'>
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="username" type="text" class="validate" length="30" name="username" value="{{ user.username }}">
+                        <label for="last_name" class="active">用户名</label>
+                    </div>
+                </div>
+                <div class="row">
+                <div class="input-field col s3">
+                        <input placeholder="Placeholder" id="first_name" type="text" class="validate" value="{{ user.first_name }}" name="first_name">
+                        <label for="first_name" class="active">名</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <input id="last_name" type="text" class="validate" value="{{ user.last_name }}" name="last_name">
+                        <label for="last_name" class="active">姓</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s3">
+                        <!--<label>性别</label>
+                        <p>
+                            <input name="group1" type="radio" id="test1" class="with-gap" checked />
+                            <label for="test1">男</label>
+                            <input name="group1" type="radio" id="test2" class="with-gap"/>
+                            <label for="test2">女</label>
+                        </p>-->
+                            <input id="last_name" type="text" class="validate" value="{{ user.gender }}" name="gender">
+                            <label for="last_name" class="active">性别</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input id="icon_telephone" type="tel" class="validate" value="{{ user.mobile }}" name="mobile">
+                        <label for="icon_telephone" class="active">电话</label>
+                    </div>
+                </div>
+                <div class="row" disable>
+                    <div class="input-field col s6">
+                        <input disabled id="email" type="email" class="validate" name="email" value="{{ user.email }}">
+                        <label for="email" class="active">邮箱</label>
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="input-field col s6">
+                        <i class="mdi-editor-mode-edit prefix"></i>
+                        <textarea id="icon_prefix2" class="materialize-textarea" length="120" name="describe">{{ user.describe }}</textarea>
+                        <label for="icon_prefix2" class="active">个人简介</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light" type="submit" name="action">修改
+                    <i class="mdi-content-send right"></i>
+                </button>
+            </form>
+            {% if info %}
+                <p>{{ info }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

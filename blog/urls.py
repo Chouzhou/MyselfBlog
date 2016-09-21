@@ -31,4 +31,6 @@ urlpatterns = [
     url(r'^resetPwd_email/', send_reset_pwd, name='resetPwd_email'),
     url(r'^reset_pwd/', reset_pwd, name='reset_pwd'),
     url(r'^modify_pwd/', modify_pwd, name='modify_pwd'),
+    # 个人信息
+    url(r'^personalInfo/', personalInfo, name='per_Info'),
 ]

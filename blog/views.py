@@ -58,7 +58,7 @@ def login(request):
 # 发送验证邮件
 
 
-def emailVerify(username, email, text_email):
+def emailVerify(request, username, email, text_email):
     token_confirm = Token(SECRET_KEY)
     token = token_confirm.generate_validate_token(username)
     user = User.objects.get(username=username)
@@ -157,7 +157,7 @@ def reset_pwd(request):
 @login_required
 def modify_pwd(request):
     if request.method == 'GET':
-        print(request.user.username)
+        # print(request.user.username)
         return render(request, 'modifyPwd.html')
     else:
         oldPwd = request.POST['oldPwd']
@@ -171,6 +171,27 @@ def modify_pwd(request):
             return render(request, 'index.html', {'info': '修改密码成功'})
         else:
             return render(request, 'modifyPwd.html', {'info', '输入的旧密码错误'})
+# 个人信息
+
+
+@login_required
+def personalInfo(request):
+    if request.method == 'GET':
+        return render(request, 'personalInfo.html', {'user': request.user})
+    else:
+        user = User.objects.get(id=request.user.id)
+        if user and user.is_active:
+            user.username = request.POST['username']
+            # user.email = request.POST['email']
+            user.first_name = request.POST['first_name']
+            user.last_name = request.POST['last_name']
+            # user.username = request.POST['username']
+            user.gender = request.POST['gender']
+            user.mobile = request.POST['mobile']
+            user.describe = request.POST['describe']
+            user.save()
+            return render(request, 'personalInfo.html', {'info': '修改成功','user':user})
+
 
 # 退出登录
 
