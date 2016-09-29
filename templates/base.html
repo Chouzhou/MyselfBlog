@@ -7,6 +7,7 @@
         </title>
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">-->
         <style type="text/css">
             /*body {
                 display: flex;
@@ -37,7 +38,7 @@
             <div class="nav-wrapper">
                 <a href="#!" class="brand-logo">Jack的博客</a>
                 <a href="#" data-activates="mobile-demo" class="button-collapse">
-                    <i class="mdi-navigation-menu"></i>
+                    <i class="fa fa-navicon"></i>
                 </a>
                 <!-- 下拉选项 -->
                 {% if user.is_authenticated %}
@@ -61,8 +62,9 @@
                             <li>
                                 <a class="dropdown-button" href="#!" data-activates="dropdown1">
                                     {{ user.username }}
-                                    <i class="mdi-navigation-arrow-drop-down right"></i>
+                                    
                                 </a>
+                                <i class="fa fa-sort-down"></i>
                             </li>
                         </ul>
                     </div>
@@ -84,10 +86,7 @@
                 {% if user.is_authenticated %}
                     <ul class="side-nav" id="mobile-demo">
                         <li>
-                            <a href="sass.html">Sass</a>
-                        </li>
-                        <li>
-                            <a href="badges.html">Components</a>
+                            <a href="{% url 'per_Info' %}">个人信息</a>
                         </li>
                         <li>
                             <a href="{% url 'modify_pwd' %}">修改密码</a>
